@@ -6,6 +6,10 @@ import sublime_plugin
 import subprocess
 
 
+
+#### RUN ELM FORMAT ####
+
+
 class ElmFormatCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         elm_format = find_elm_format()
@@ -31,6 +35,10 @@ class ElmFormatCommand(sublime_plugin.TextCommand):
             self.view.window().destroy_output_panel("elm_format")
 
 
+
+#### FORMAT ON SAVE ####
+
+
 class ElmFormatOnSave(sublime_plugin.EventListener):
     def on_pre_save(self, view):
         scope = view.scope_name(0)
@@ -38,11 +46,12 @@ class ElmFormatOnSave(sublime_plugin.EventListener):
             view.run_command('elm_format')
 
 
-#
-# alternative available in Python 3.3 and up
-# shutil.which('elm-format', mode=os.X_OK)
-#
+
+#### EXPLORE PATH ####
+
+
 def find_elm_format():
+    # shutil.which('elm-format', mode=os.X_OK) # only available in Python 3.3
     exts = os.environ['PATHEXT'].lower().split(os.pathsep) if os.name == 'nt' else ['']
     for directory in os.environ['PATH'].split(os.pathsep):
         for ext in exts:
@@ -50,6 +59,10 @@ def find_elm_format():
             if os.access(path, os.X_OK):
                 return path
     return None
+
+
+
+#### ERROR MESSAGES ####
 
 
 def open_panel(self, content):
@@ -63,14 +76,24 @@ def open_panel(self, content):
 
 
 def cannot_find_elm_format_message():
-    return """
+    return """-- ELM-FORMAT NOT FOUND -----------------------------------------------
 
-I wanted to run `elm-format` but I could not find it!
+I tried run elm-format, but I could not find it on your computer.
 
-Your PATH variable led me to check in the following directories:
+Try the recommendations from:
 
-    TODO
-    TODO
+  https://github.com/evancz/elm-format-shortcuts/blob/master/troubleshooting.md
 
-But I could not find it in any of them.
+If everything fails, just remove the "elm-format-shortcuts" plugin from
+your editor via Package Control. Sometimes it is not worth the trouble.
+
+-----------------------------------------------------------------------
+
+NOTE: Your PATH variable led me to check in the following directories:
+
+    """ + '\n    '.join(os.environ['PATH'].split(os.pathsep)) + """
+
+But I could not find `elm-format` in any of them. Please let me know
+at https://github.com/evancz/elm-format-shortcuts/issues if this does
+not seem correct!
 """
