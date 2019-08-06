@@ -7,7 +7,7 @@ import subprocess
 
 
 
-#### RUN ELM FORMAT ####
+#### COMMAND ####
 
 
 class ElmFormatCommand(sublime_plugin.TextCommand):
@@ -36,14 +36,59 @@ class ElmFormatCommand(sublime_plugin.TextCommand):
 
 
 
-#### FORMAT ON SAVE ####
+#### ON SAVE ####
 
 
 class ElmFormatOnSave(sublime_plugin.EventListener):
     def on_pre_save(self, view):
         scope = view.scope_name(0)
-        if scope.find('source.elm') != -1:
+        if scope.find('source.elm') != -1 and needs_format(self, view.file_name()):
             view.run_command('elm_format')
+
+
+def needs_format(self, path):
+    settings = sublime.load_settings('elm-format-on-save.sublime-settings')
+    on_save = settings.get('on_save')
+
+    if isinstance(on_save, bool):
+        return on_save
+
+    if isinstance(on_save, dict):
+        included = is_included(path)
+        excluded = is_excluded(path)
+        if isinstance(included, bool) and isinstance(excluded, bool):
+            return included and not excluded
+
+    open_panel(self, invalid_settings)
+    return False
+
+
+def is_included(path):
+    if including in on_save:
+        if not isinstance(on_save.including, list):
+            return None
+
+        for string in on_save.including:
+            if string in path:
+                return True
+
+        return False
+
+    return True
+
+
+def is_excluded(path):
+    if excluding in on_save:
+        if not isinstance(on_save.excluding, list):
+            return None
+
+        for string in on_save.excluding:
+            if string in path:
+                return True
+
+        return False
+
+    return False
 
 
 
@@ -75,6 +120,10 @@ def open_panel(self, content):
     window.run_command("show_panel", {"panel": "output.elm_format"})
 
 
+
+#### ERROR MESSAGES ####
+
+
 def cannot_find_elm_format_message():
     return """-- ELM-FORMAT NOT FOUND -----------------------------------------------
 
@@ -82,9 +131,9 @@ I tried run elm-format, but I could not find it on your computer.
 
 Try the recommendations from:
 
-  https://github.com/evancz/elm-format-shortcuts/blob/master/troubleshooting.md
+  https://github.com/evancz/elm-format-on-save/blob/master/troubleshooting.md
 
-If everything fails, just remove the "elm-format-shortcuts" plugin from
+If everything fails, just remove the "elm-format-on-save" plugin from
 your editor via Package Control. Sometimes it is not worth the trouble.
 
 -----------------------------------------------------------------------
@@ -94,6 +143,18 @@ NOTE: Your PATH variable led me to check in the following directories:
     """ + '\n    '.join(os.environ['PATH'].split(os.pathsep)) + """
 
 But I could not find `elm-format` in any of them. Please let me know
-at https://github.com/evancz/elm-format-shortcuts/issues if this does
+at https://github.com/evancz/elm-format-on-save/issues if this does
 not seem correct!
+"""
+
+
+invalid_settings = """-- INVALID SETTINGS ---------------------------------------------------
+
+The "on_save" field in your settings is invalid.
+
+For help, check out the section on including/excluding files within:
+
+  https://github.com/evancz/elm-format-on-save/blob/master/README.md
+
+-----------------------------------------------------------------------
 """
