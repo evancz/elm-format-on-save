@@ -47,4 +47,4 @@ This plugin works by modifying the code in the editor itself.
 
 So when it runs "on save" it is specifically running _before_ the file is saved to disk.
 
-This is really important if you have some elaborate file watching system set up! Other plugins may format _after_ the file is saved to disk, triggering a second save, and thereby degrading the performance of your file watching system. Why compile a file if you are just about to change that file?
+This is really important if you have some elaborate file watching system set up! Other plugins may format _after_ the file is saved to disk, triggering a second save, and thereby degrading the performance of your file watching system.
