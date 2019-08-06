@@ -12,10 +12,9 @@ import subprocess
 
 class ElmFormatCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        elm_format = find_elm_format()
+        elm_format = find_elm_format(self)
 
         if elm_format == None:
-            open_panel(self, cannot_find_elm_format_message())
             return
 
         region = sublime.Region(0, self.view.size())
@@ -95,7 +94,16 @@ def is_excluded(path):
 #### EXPLORE PATH ####
 
 
-def find_elm_format():
+def find_elm_format(self):
+    settings = sublime.load_settings('elm-format-on-save.sublime-settings')
+    given_path = settings.get('absolute_path')
+    if given_path != None and given_path != '':
+        if isinstance(given_path, str) and os.path.isabs(given_path) and os.access(given_path, os.X_OK):
+            return given_path
+        
+        open_panel(self, bad_absolute_path)
+        return None
+
     # shutil.which('elm-format', mode=os.X_OK) # only available in Python 3.3
     exts = os.environ['PATHEXT'].lower().split(os.pathsep) if os.name == 'nt' else ['']
     for directory in os.environ['PATH'].split(os.pathsep):
@@ -103,6 +111,8 @@ def find_elm_format():
             path = os.path.join(directory, 'elm-format' + ext)
             if os.access(path, os.X_OK):
                 return path
+
+    open_panel(self, cannot_find_elm_format())
     return None
 
 
@@ -124,7 +134,7 @@ def open_panel(self, content):
 #### ERROR MESSAGES ####
 
 
-def cannot_find_elm_format_message():
+def cannot_find_elm_format():
     return """-- ELM-FORMAT NOT FOUND -----------------------------------------------
 
 I tried run elm-format, but I could not find it on your computer.
@@ -155,6 +165,21 @@ The "on_save" field in your settings is invalid.
 For help, check out the section on including/excluding files within:
 
   https://github.com/evancz/elm-format-on-save/blob/master/README.md
+
+-----------------------------------------------------------------------
+"""
+
+
+bad_absolute_path = """-- INVALID SETTINGS ---------------------------------------------------
+
+The "absolute_path" field in your settings is invalid.
+
+I need the following Python expressions to be True with the given path:
+
+    os.path.isabs(absolute_path)
+    os.access(absolute_path, os.X_OK)
+
+Is the path correct? Do you need to run "chmod +x" on the file?
 
 -----------------------------------------------------------------------
 """
