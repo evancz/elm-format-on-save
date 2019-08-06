@@ -5,6 +5,8 @@
 
 Run `elm-format` whenever you save an Elm file.
 
+And add the keyboard shortcut `Ctrl+K` `Ctrl+F` (or `Cmd+K` `Cmd+F` on Mac) to run `elm-format` any time you want. No need to save.
+
 
 ## Install
 
@@ -17,9 +19,26 @@ Run `elm-format` whenever you save an Elm file.
 Try saving an Elm file to see if it works. You may see a panel open with troubleshooting advice if something has gone wrong!
 
 
-## Keyboard Shortcut
+## Including/Excluding Files
 
-You should be able to press `Ctrl+K` `Ctrl+F` (or `Cmd+K` `Cmd+F` on Mac) to run `elm-format` without needing to trigger a save.
+Do you only want `elm-format` to run on certain files? (e.g. only work code)
+
+Go to **Preferences -> Package Settings -> Elm Format on Save -> Settings**
+
+You will see two panels. The left is all the defaults and the right is your custom overrides. So in the right panel, you can override the default settings with something like:
+
+```json
+{
+    "on_save": {
+        "including": ["my/company/"],
+        "excluding": ["src/generated/"]
+    }
+}
+```
+
+This would mean that you only run `elm-format` on code that is in the `my/company/` directory, but you skip any files in the `src/generated` directory.
+
+See the left settings panel for more information about how to include and exclude files!
 
 
 ## Technical Details
