@@ -1,0 +1,38 @@
+{
+    // Provide an absolute path to the elm-format binary.
+    // I might put "/usr/local/bin/elm-format" if the plugin is
+    // having trouble finding the executable on my PATH.
+    //
+    // It is probably more helpful if you want to use a specific
+    // version of elm-format like "/usr/local/bin/elm-format-0.8"
+    // for some reason
+    //
+    "absolute_path": "",
+
+    // Be more specific about when you run elm-format. You can use
+    // a boolean value to just turn it on and off:
+    //
+    //     "on_save": true
+    //     "on_save": false
+    //
+    // But if you only want to run elm-format on certain code:
+    //
+    //     "on_save": {
+    //         "including": ["my/company/","public/package/"]
+    //     }
+    //
+    // That means elm-format-on-save is only active if you are editing
+    // a file path that contains one of those strings. You can also do
+    // the reverse and specifically exclude certain files:
+    //
+    //     "on_save": {
+    //         "excluding": ["personal/project/","src/generated/"]
+    //     }
+    //
+    //     "on_save": {
+    //         "including": ["my/company/"],
+    //         "excluding": ["src/generated/"]
+    //     }
+    //
+    "on_save": true
+}
