@@ -8,10 +8,10 @@ And add the keyboard shortcut `Ctrl+K` `Ctrl+F` (or `Cmd+K` `Cmd+F` on Mac) to r
 ## Install
 
 0. Install [`elm-format`](https://github.com/avh4/elm-format)
-1. Install [`elm-syntax-highlighting`](https://github.com/evancz/elm-syntax-highlighting)
+1. Install [Elm Syntax Highlighting](https://github.com/evancz/elm-syntax-highlighting)
 2. Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on Mac) to open the Command Palette
 3. Select **Package Control: Install Package**
-4. Select `elm-format-on-save`
+4. Select **Elm Format on Save**
 
 Try saving an Elm file to see if it works. You may see a panel open with troubleshooting advice if something has gone wrong!
 
