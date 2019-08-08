@@ -1,0 +1,26 @@
+[
+    {
+        "id": "preferences",
+        "children":
+        [{
+            "id": "package-settings",
+            "children":
+            [
+                {
+                    "caption": "Elm Format on Save",
+                    "children":
+                    [
+                        {
+                            "caption": "Settings",
+                            "command": "edit_settings",
+                            "args": {
+                                "base_file": "${packages}/Elm Format on Save/elm-format-on-save.sublime-settings",
+                                "default": "// Settings here override the defaults in the left panel.\n// Add an \"absolute_path\" or \"on_save\" field to change the settings.\n\n{\n\t$0\n}\n"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }]
+    }
+]
