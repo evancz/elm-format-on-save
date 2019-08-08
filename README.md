@@ -20,7 +20,7 @@ Try saving an Elm file to see if it works. You may see a panel open with trouble
 
 Do you only want `elm-format` to run on certain files? (e.g. only work code)
 
-Go to **Preferences -> Package Settings -> Elm Format on Save -> Settings**
+Go to **Sublime Text -> Preferences -> Package Settings -> Elm Format on Save -> Settings**
 
 You will see two panels. The left is all the defaults and the right is your custom overrides. So in the right panel, you can override the default settings with something like:
 
