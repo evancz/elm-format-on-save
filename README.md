@@ -1,6 +1,3 @@
-**NOT PUBLISHED YET / WORK IN PROGRESS**
-
-
 # Elm Format on Save
 
 Run `elm-format` whenever you save an Elm file.
