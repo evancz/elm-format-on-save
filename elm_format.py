@@ -12,7 +12,7 @@ import subprocess
 
 class ElmFormatCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        elm_format = find_elm_format(self)
+        elm_format = find_elm_format(self.view)
 
         if elm_format == None:
             return
@@ -28,10 +28,10 @@ class ElmFormatCommand(sublime_plugin.TextCommand):
             shell=os.name=="nt").communicate(input=bytes(content, 'UTF-8'))
 
         if stderr.strip():
-            open_panel(self, re.sub('\x1b\[\d{1,2}m', '', stderr.strip().decode()))
+            open_panel(self.view, re.sub('\x1b\[\d{1,2}m', '', stderr.strip().decode()))
         else:
             self.view.replace(edit, region, stdout.decode('UTF-8'))
-            self.view.window().destroy_output_panel("elm_format")
+            self.view.window().run_command("hide_panel", {"panel": "output.elm_format"})
 
 
 
@@ -41,11 +41,11 @@ class ElmFormatCommand(sublime_plugin.TextCommand):
 class ElmFormatOnSave(sublime_plugin.EventListener):
     def on_pre_save(self, view):
         scope = view.scope_name(0)
-        if scope.find('source.elm') != -1 and needs_format(self, view.file_name()):
+        if scope.find('source.elm') != -1 and needs_format(view):
             view.run_command('elm_format')
 
 
-def needs_format(self, path):
+def needs_format(view):
     settings = sublime.load_settings('elm-format-on-save.sublime-settings')
     on_save = settings.get('on_save')
 
@@ -53,12 +53,13 @@ def needs_format(self, path):
         return on_save
 
     if isinstance(on_save, dict):
+        path = view.file_name()
         included = is_included(on_save, path)
         excluded = is_excluded(on_save, path)
         if isinstance(included, bool) and isinstance(excluded, bool):
             return included and not excluded
 
-    open_panel(self, invalid_settings)
+    open_panel(view, invalid_settings)
     return False
 
 
@@ -94,14 +95,14 @@ def is_excluded(on_save, path):
 #### EXPLORE PATH ####
 
 
-def find_elm_format(self):
+def find_elm_format(view):
     settings = sublime.load_settings('elm-format-on-save.sublime-settings')
     given_path = settings.get('absolute_path')
     if given_path != None and given_path != '':
         if isinstance(given_path, str) and os.path.isabs(given_path) and os.access(given_path, os.X_OK):
             return given_path
 
-        open_panel(self, bad_absolute_path)
+        open_panel(view, bad_absolute_path)
         return None
 
     # shutil.which('elm-format', mode=os.X_OK) # only available in Python 3.3
@@ -112,7 +113,7 @@ def find_elm_format(self):
             if os.access(path, os.X_OK):
                 return path
 
-    open_panel(self, cannot_find_elm_format())
+    open_panel(view, cannot_find_elm_format())
     return None
 
 
@@ -120,8 +121,8 @@ def find_elm_format(self):
 #### ERROR MESSAGES ####
 
 
-def open_panel(self, content):
-    window = self.view.window()
+def open_panel(view, content):
+    window = view.window()
     panel = window.create_output_panel("elm_format")
     panel.set_read_only(False)
     panel.run_command('erase_view')
