@@ -53,8 +53,8 @@ def needs_format(self, path):
         return on_save
 
     if isinstance(on_save, dict):
-        included = is_included(path)
-        excluded = is_excluded(path)
+        included = is_included(on_save, path)
+        excluded = is_excluded(on_save, path)
         if isinstance(included, bool) and isinstance(excluded, bool):
             return included and not excluded
 
@@ -62,12 +62,12 @@ def needs_format(self, path):
     return False
 
 
-def is_included(path):
-    if including in on_save:
-        if not isinstance(on_save.including, list):
+def is_included(on_save, path):
+    if "including" in on_save:
+        if not isinstance(on_save.get("including"), list):
             return None
 
-        for string in on_save.including:
+        for string in on_save.get("including"):
             if string in path:
                 return True
 
@@ -76,12 +76,12 @@ def is_included(path):
     return True
 
 
-def is_excluded(path):
-    if excluding in on_save:
-        if not isinstance(on_save.excluding, list):
+def is_excluded(on_save, path):
+    if "excluding" in on_save:
+        if not isinstance(on_save.get("excluding"), list):
             return None
 
-        for string in on_save.excluding:
+        for string in on_save.get("excluding"):
             if string in path:
                 return True
 
@@ -100,7 +100,7 @@ def find_elm_format(self):
     if given_path != None and given_path != '':
         if isinstance(given_path, str) and os.path.isabs(given_path) and os.access(given_path, os.X_OK):
             return given_path
-        
+
         open_panel(self, bad_absolute_path)
         return None
 
