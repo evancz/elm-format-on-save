@@ -47,7 +47,7 @@ class ElmFormatOnSave(sublime_plugin.EventListener):
 
 def needs_format(view):
     settings = sublime.load_settings('elm-format-on-save.sublime-settings')
-    on_save = settings.get('on_save')
+    on_save = settings.get('on_save', True)
 
     if isinstance(on_save, bool):
         return on_save
